@@ -6,6 +6,7 @@ import org.springframework.stereotype.Service;
 import java.time.LocalDate;
 import java.time.Month;
 import java.util.List;
+import java.util.Optional;
 
 //  @Component //usado para inyección de dependencias
 @Service // Usado para inyección de dependencias Pero RECONOCIENDO ESTO COMO SERVICIOS
@@ -22,8 +23,13 @@ public class StudentService {
         return studentRepository.findAll();
     }
 
-    public static void addNewStudent(Student student) {
-        System.out.println(student);
+    public void addNewStudent(Student student) {
+        Optional<Student> studentByEmail = studentRepository
+                .findByEmail(student.getEmail());
+        if (studentByEmail.isPresent()){
+            throw new IllegalStateException("email taken");
+        }
+        studentRepository.save(student);
     }
 
 }
